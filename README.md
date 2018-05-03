@@ -1,2 +1,4 @@
 # TpWeather
-Node JS tp 
+
+npm init
+npm install -g 
