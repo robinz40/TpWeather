@@ -21,7 +21,7 @@ let choiceCity = [
         ]
     }
 ]
-let choiceFive = [
+let choiceWeek = [
     {
         type: "list",
         name: "City",
@@ -43,7 +43,9 @@ let choiceFive = [
             dateFormat(now + 86400000, "dddd, mmmm dS, yyyy"),
             dateFormat(now + 86400000*2, "dddd, mmmm dS, yyyy"),
             dateFormat(now + 86400000*3, "dddd, mmmm dS, yyyy"),
-            dateFormat(now + 86400000*4, "dddd, mmmm dS, yyyy")
+            dateFormat(now + 86400000*4, "dddd, mmmm dS, yyyy"),
+            dateFormat(now + 86400000*5, "dddd, mmmm dS, yyyy"),
+            dateFormat(now + 86400000*6, "dddd, mmmm dS, yyyy")
         ]
     }
 ]
@@ -56,8 +58,7 @@ let dataps = {}
 program
     .version('1.0.1')
     .option('-c, --current', 'Show current weather for a city')
-    .option('-f, --fivedays', 'Show weather details all 3 hours for a city during 5 days')
-    .option('-s, --sixteendays', 'Show day\'s weather for a city during 16 days')
+    .option('-w, --week', 'Show day\'s weather for a city during 7 days')
 
 program.parse(process.argv)
 
@@ -104,92 +105,89 @@ if (program.current) {
 }
 
 
- else if (program.fivedays) {
+ else if (program.week) {
     console.log(`Weather details all 3 hours for a city during 5 days`)
-        inquirer.prompt(choiceFive).then(function (answers) {
-            console.log('/////////////')
-            const getfivedayweather = async () => {
+        inquirer.prompt(choiceWeek).then(function (answers) {
+
+            const getweekweather = async () => {
                 try {
 
-                    databx = await request.get('https://api.openweathermap.org/data/2.5/forecast?q=Bordeaux&APPID=faff0d791288fe7346e58eaaa43ba313')
-                    dataly = await request.get('https://api.openweathermap.org/data/2.5/forecast?q=Lyon&APPID=faff0d791288fe7346e58eaaa43ba313')
-                    dataml = await request.get('https://api.openweathermap.org/data/2.5/forecast?q=Marseille&APPID=faff0d791288fe7346e58eaaa43ba313')
-                    datant = await request.get('https://api.openweathermap.org/data/2.5/forecast?q=Nantes&APPID=faff0d791288fe7346e58eaaa43ba313')
-                    dataps = await request.get('https://api.openweathermap.org/data/2.5/forecast?q=Paris&APPID=faff0d791288fe7346e58eaaa43ba313')
+                    databx = await request.get('https://samples.openweathermap.org/data/2.5/forecast/daily?q=Bordeaux&APPID=faff0d791288fe7346e58eaaa43ba313')
+                    dataly = await request.get('https://samples.openweathermap.org/data/2.5/forecast/daily?q=Lyon&APPID=faff0d791288fe7346e58eaaa43ba313')
+                    dataml = await request.get('https://samples.openweathermap.org/data/2.5/forecast/daily?q=Marseille&APPID=faff0d791288fe7346e58eaaa43ba313')
+                    datant = await request.get('https://samples.openweathermap.org/data/2.5/forecast/daily?q=Nantes&APPID=faff0d791288fe7346e58eaaa43ba313')
+                    dataps = await request.get('https://samples.openweathermap.org/data/2.5/forecast/daily?q=Paris&APPID=faff0d791288fe7346e58eaaa43ba313')
+                    
                     cities = [
                         {
                             name: 'Bordeaux',
-                            time: databx.list["0"].dt,
-                            temperature: databx.data.list["0"].main.temp,
-                            humidite: databx.data.list["0"].main.humidity,
+                            time: answers.Time,
+                            temperature: databx.data.list["0"].temp.day,
+                            humidite: databx.data.list["0"].humidity,
                             globalweather: databx.data.list["0"].weather["0"].main,
                             description: databx.data.list["0"].weather["0"].description,
-                            windspeed: databx.data.list["0"].wind.speed
+                            windspeed: databx.data.list["0"].speed
                         },
                         {
                             name: 'Lyon',
-                            time: databx.list["0"].dt,
-                            temperature: dataly.data.list["0"].main.temp,
-                            humidite: dataly.data.list["0"].main.humidity,
+                            time: answers.Time,
+                            temperature: dataly.data.list["0"].temp.day,
+                            humidite: dataly.data.list["0"].humidity,
                             globalweather: dataly.data.list["0"].weather["0"].main,
                             description: dataly.data.list["0"].weather["0"].description,
-                            windspeed: dataly.data.list["0"].wind.speed
+                            windspeed: dataly.data.list["0"].speed
                         },
                         {
                             name: 'Marseille',
-                            time: databx.list["0"].dt,
-                            temperature: dataml.data.list["0"].main.temp,
-                            humidite: dataml.data.list["0"].main.humidity,
+                            time: answers.Time,
+                            temperature: dataml.data.list["0"].temp.day,
+                            humidite: dataml.data.list["0"].humidity,
                             globalweather: dataml.data.list["0"].weather["0"].main,
                             description: dataml.data.list["0"].weather["0"].description,
-                            windspeed: dataml.data.list["0"].wind.speed
+                            windspeed: dataml.data.list["0"].speed
                         },
                         {
                             name: 'Paris',
-                            time: databx.list["0"].dt,
-                            temperature: dataps.data.list["0"].main.temp,
-                            humidite: dataps.data.list["0"].main.humidity,
+                            time: answers.Time,
+                            temperature: dataps.data.list["0"].temp.day,
+                            humidite: dataps.data.list["0"].humidity,
                             globalweather: dataps.data.list["0"].weather["0"].main,
                             description: dataps.data.list["0"].weather["0"].description,
-                            windspeed: dataps.data.list["0"].wind.speed
+                            windspeed: dataps.data.list["0"].speed
                         },
                         {
                             name: 'Nantes',
-                            time: databx.list["0"].dt,
-                            temperature: datant.data.list["0"].main.temp,
-                            humidite: datant.data.list["0"].main.humidity,
+                            time: answers.Time,
+                            temperature: datant.data.list["0"].temp.day,
+                            humidite: datant.data.list["0"].humidity,
                             globalweather: datant.data.list["0"].weather["0"].main,
                             description: datant.data.list["0"].weather["0"].description,
-                            windspeed: datant.data.list["0"].wind.speed
+                            windspeed: datant.data.list["0"].speed
                         },
                     ];
 
                     cities.forEach((city) => {
                         if (city.name == answers.City) {
-                            if (city.time == answers.Time)
-                            console.log('------------------------------')
-                            console.log(' Weather details for ' +
-                                '\nat %s' +
-                                '\n------------------------------' +
-                                '\nTemperature : %s°c' +
-                                '\nGlobal weather : %s' +
-                                '\nDetails : %s' +
-                                '\nHumidity : %s %' +
-                                '\nWind speed : %s km/h',
-                                city.name, Math.round(city.temperature - 273.15), city.globalweather, city.description, city.humidite, Math.round(city.windspeed * 3.6));
-                        }
+                                console.log('------------------------------')
+                                console.log(' Weather details for %s' +
+                                    '\nat %s' +
+                                    '\n------------------------------' +
+                                    '\nTemperature : %s°c' +
+                                    '\nGlobal weather : %s' +
+                                    '\nDetails : %s' +
+                                    '\nHumidity : %s %' +
+                                    '\nWind speed : %s km/h',
+                                    city.name, city.time, Math.round(city.temperature - 273.15), city.globalweather, city.description, city.humidite, Math.round(city.windspeed * 3.6));
+
+                            }
                     })
                 }
                 catch (err) {
                     console.log('Error : ' + err.message)
                 }
             }
-            getfivedayweather()
+            getweekweather()
         })
-
-
-} else if (program.sixteendays) {
-    console.log(`Show day's weather for a city during 16 days !`)
 } else {
     program.help()
 }
