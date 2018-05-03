@@ -1,0 +1,22 @@
+{
+  "name": "TpWeather",
+  "version": "1.0.1",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "bin": {
+    "mycommand": "./main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "colors": "^1.2.3",
+    "commander": "^2.15.1",
+    "dateformat": "^3.0.3",
+    "inquirer": "^5.2.0"
+  }
+}
